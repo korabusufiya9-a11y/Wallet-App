@@ -1,100 +1,90 @@
-const BudgetController= require('../Models/BudgetModel');
+const Budget = require('../Models/BudgetModel'); 
+const Record = require('../Models/RecordModel'); 
 
-// @desc    Create a new budget limit
-// @route   POST /api/budgets
-exports.createBudget = async (req, res) => {
+const calculateBudgetVariance = (budgetedAmount, actualSpent) => {
+    return budgetedAmount - actualSpent;
+};
+
+// 1. CREATE Budget
+const create = async (req, res) => {
     try {
-        const { startDate, endDate } = req.body;
+        const newBudget = await Budget.create(req.body);
+        res.status(201).json({ success: true, data: newBudget });
+    } catch (error) {
+        res.status(400).json({ success: false, message: error.message });
+    }
+};
 
-        // Logic: Ensure end date isn't before start date
-        if (new Date(startDate) >= new Date(endDate)) {
-            return res.status(400).json({
-                success: false,
-                message: "End date must be after the start date."
+// 2. GET ALL BUDGETS (With Variance Calculation)
+const getAllBudgets = async (req, res) => {
+    try {
+        const budgets = await Budget.find();
+        
+    
+        const budgetsWithAnalysis = await Promise.all(budgets.map(async (budget) => {
+            
+         
+            const records = await Record.find({ 
+                category: budget.category, 
+                type: 'expense' 
             });
-        }
 
-        const budget = await Budget.create(req.body);
+            const totalSpent = records.reduce((acc, curr) => acc + curr.amount, 0);
+            const variance = calculateBudgetVariance(budget.amount, totalSpent);
 
-        res.status(201).json({
-            success: true,
-            data: budget
-        });
+            return {
+                ...budget._doc,
+                totalSpent,
+                variance,
+                status: variance < 0 ? "Over Budget" : "Under Budget"
+            };
+        }));
+
+        res.status(200).json({ success: true, data: budgetsWithAnalysis });
     } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message
-        });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// @desc    Get all budgets for a user with Category details
-// @route   GET /api/budgets/user/:userId
-exports.getuserBudget = async (req, res) => {
+// 3. GET SINGLE BUDGET
+const getBudgetById = async (req, res) => {
     try {
-        // .populate('CategoryId') allows you to see the category name/icon instead of just the ID
-        const Budgets = await Budget.find({ useId: req.params.userId })
-                                    .populate('CategoryId', 'name icon'); 
-
-        res.status(200).json({
-            success: true,
-            count: budgets.length,
-            data: budgets
-        });
+        const budget = await Budget.findById(req.params.id);
+        if (!budget) return res.status(404).json({ success: false, message: "Budget sapadle nahi" });
+        
+        res.status(200).json({ success: true, data: budget });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "Server Error"
-        });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// @desc    Update a budget (e.g., increase the limit)
-// @route   PUT /api/budgets/:id
-exports.updateBudget = async (req, res) => {
+// 4. UPDATE BUDGET
+const updateBudget = async (req, res) => {
     try {
-        const Budget = await Budget.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            { new: true, runValidators: true }
-        );
-
-        if (!Budget) {
-            return res.status(404).json({ success: false, message: "Budget not found" });
-        }
-
-        res.status(200).json({
-            success: true,
-            data: budget
+        const budget = await Budget.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true
         });
+        res.status(200).json({ success: true, data: budget });
     } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message
-        });
+        res.status(400).json({ success: false, message: error.message });
     }
 };
 
-// @desc    Delete a budget
-// @route   DELETE /api/budgets/:id
-exports.deleteBudget = async (req, res) => {
+// 5. DELETE BUDGET
+const deleteBudget = async (req, res) => {
     try {
-        const budget = await Budget.findByIdAndDelete(req.params.id);
-
-        if (!budget) {
-            return res.status(404).json({ success: false, message: "Budget not found" });
-        }
-
-        res.status(200).json({
-            success: true,
-            message: "Budget removed"
-        });
+        await Budget.findByIdAndDelete(req.params.id);
+        res.status(200).json({ success: true, message: "Budget delete zale!" });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
+module.exports={
+        create,
+    getAllBudgets,
+    getBudgetById,
+    updateBudget,
+    deleteBudget
 
-module.exports=BudgetController;
+}

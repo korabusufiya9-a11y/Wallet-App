@@ -16,6 +16,8 @@ app.use('/api', authRouter);
 app.use('/api',LabelRouter);
 app.use('/api',CategoryRouter);
 app.use('/api',BudgetRouter);
+
+
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
