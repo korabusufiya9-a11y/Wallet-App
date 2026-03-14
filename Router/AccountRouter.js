@@ -3,11 +3,11 @@ const router = express.Router();
 const accountController = require('../Controllers/AccountController');
 
 // Account routes
-router.get('/accounts', accountController.getAllAccounts);
-router.post('/accounts', accountController.createAccount);
-router.get('/accounts/:id', accountController.getAccountById);
-router.put('/accounts/:id', accountController.updateAccount);
-router.delete('/accounts/:id', accountController.deleteAccount);
+router.get('/', accountController.getAllAccounts); // Get all accounts
+router.post('/', accountController.createAccount);
+router.get('/:id', accountController.getAccountById);
+router.put('/:id', accountController.updateAccount);
+router.delete('/:id', accountController.deleteAccount);
 
 module.exports = router;
 

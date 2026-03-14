@@ -12,12 +12,15 @@ const LabelRouter = require('./Router/LabelRouter');
 const connectDB = require('./Config/db');
 connectDB();
 app.use(express.json());
-app.use('/api', authRouter);
-app.use('/api', AccountRouter);
-app.use('/api', LabelRouter);
-app.use('/api', CategoryRouter);
-app.use('/api', BudgetRouter);
-app.use('/api', RecordRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/accounts', AccountRouter);
+app.use('/api/labels', LabelRouter);
+app.use('/api/categories', CategoryRouter);
+app.use('/api/budgets', BudgetRouter);
+app.use('/api/records', RecordRouter);
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
+
+
+//test comment
