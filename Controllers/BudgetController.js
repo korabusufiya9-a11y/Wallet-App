@@ -1,8 +1,6 @@
 const Budget = require('../Models/BudgetModel'); 
 const Record = require('../Models/RecordModel'); 
 
-// --- UTILITY: Variance Calculate karne ---
-
 const calculateBudgetVariance = (budgetedAmount, actualSpent) => {
     return budgetedAmount - actualSpent;
 };
@@ -22,10 +20,10 @@ exports.getAllBudgets = async (req, res) => {
     try {
         const budgets = await Budget.find();
         
-        // Pratyek budget sathi actual spent calculate kara
+    
         const budgetsWithAnalysis = await Promise.all(budgets.map(async (budget) => {
             
-            // Ya category cha ekun kharch kiti aahe te baha
+         
             const records = await Record.find({ 
                 category: budget.category, 
                 type: 'expense' 
