@@ -6,7 +6,7 @@ const calculateBudgetVariance = (budgetedAmount, actualSpent) => {
 };
 
 // 1. CREATE Budget
-const create = async (req, res) => {
+exports.createBudget = async (req, res) => {
     try {
         const newBudget = await Budget.create(req.body);
         res.status(201).json({ success: true, data: newBudget });
@@ -16,7 +16,7 @@ const create = async (req, res) => {
 };
 
 // 2. GET ALL BUDGETS (With Variance Calculation)
-const getAllBudgets = async (req, res) => {
+exports.getAllBudgets = async (req, res) => {
     try {
         const budgets = await Budget.find();
         
@@ -47,7 +47,7 @@ const getAllBudgets = async (req, res) => {
 };
 
 // 3. GET SINGLE BUDGET
-const getBudgetById = async (req, res) => {
+exports.getBudgetById = async (req, res) => {
     try {
         const budget = await Budget.findById(req.params.id);
         if (!budget) return res.status(404).json({ success: false, message: "Budget sapadle nahi" });
@@ -59,7 +59,7 @@ const getBudgetById = async (req, res) => {
 };
 
 // 4. UPDATE BUDGET
-const updateBudget = async (req, res) => {
+exports.updateBudget = async (req, res) => {
     try {
         const budget = await Budget.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
@@ -72,7 +72,7 @@ const updateBudget = async (req, res) => {
 };
 
 // 5. DELETE BUDGET
-const deleteBudget = async (req, res) => {
+exports.deleteBudget = async (req, res) => {
     try {
         await Budget.findByIdAndDelete(req.params.id);
         res.status(200).json({ success: true, message: "Budget delete zale!" });
@@ -80,11 +80,3 @@ const deleteBudget = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
-module.exports={
-        create,
-    getAllBudgets,
-    getBudgetById,
-    updateBudget,
-    deleteBudget
-
-}
