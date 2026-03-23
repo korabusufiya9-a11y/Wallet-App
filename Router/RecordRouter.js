@@ -12,4 +12,4 @@ router.put('/update/:id', RecordController.updateRecord);
 
 router.delete('/delete/:id', RecordController.deleteRecord);
 
-module.exports = router;
+module.exports = router; 

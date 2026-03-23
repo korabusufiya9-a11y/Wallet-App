@@ -19,7 +19,7 @@ const BudgetSchema = new mongoose.Schema({
         required: [true, "Budget name is required"],    
         trim: true
     },
-    limitedAmount:{
+    amount:{
         type: Number,
         required: [true, "Limited amount is required"],
         min: [0, "Limited amount cannot be negative"],

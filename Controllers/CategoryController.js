@@ -70,8 +70,8 @@ const LabelController = {
 
     getAll: async(req,res)=>{
         try{
-            const Label = await LabelModel.Find({userId:req.body.userId})
-            res.status(200).json(Label)
+            const Labels= await LabelModel.find({userId:req.query.userId});
+            res.status(200).json(Labels)
         }catch (error){
             res.status(500).json({sucess:false , message: error.message});
         }
@@ -95,8 +95,8 @@ const LabelController = {
     delete: async(req,res) =>{
 try {
             const deleted = await LabelModel.findByIdAndDelete(req.params.id);
-            if (!deleted) return res.status(404).json({ message: "Category not found" });
-            res.status(200).json({ message: "Category deleted successfully" });
+            if (!deleted) return res.status(404).json({ message: "Label not found" });
+            res.status(200).json({ message: "Label deleted successfully" });
         } catch (error) {
             res.status(500).json({ success: false, message: error.message });
         }

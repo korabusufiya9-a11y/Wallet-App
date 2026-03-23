@@ -1,7 +1,7 @@
 const { type } = require('express/lib/response');
 const mongoose = require('mongoose');
 
-const RecordSchema = new mongoose.Schema({
+const    RecordSchema = new mongoose.Schema({
     userId: {   
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -17,7 +17,7 @@ const RecordSchema = new mongoose.Schema({
         ref: 'Category',
         required: [true, "Category ID is required"],
     },
-    labelIds: [{
+    labelId: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Label',
     }],

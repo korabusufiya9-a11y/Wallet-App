@@ -1,7 +1,7 @@
     const bcryptjs = require("bcryptjs")
     const AuthController = require("../Controllers/AuthController");
     const User = require("../Models/UserModel");
-  
+
 
     const  register = async (req, res) => {
       try {
@@ -45,18 +45,13 @@
       try {
         const { email, otpInput } = req.body;
 
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email }).select("+otp");
         if (!user) return res.status(404).json({ msg: "User not found." });
 
-
-        if (user.otp === otpInput) {
-          
+        if (user.otp && user.otp.toString() === otpInput.toString()) {
         
-          user.status = 'Active';
-          
-          
-          user.verification_code = null;
-          
+          user.status = 'Active' 
+          user.verification_code = null; 
           await user.save();
 
           res.status(200).json({ message: "Registration Successful. Account is now Active." });
